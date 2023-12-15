@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harry Potter Sorting Quiz</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        text-align: center;
+        background-color: #174990;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      #quiz-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #174990;
+      }
+
+      .option {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+
+      .option:hover {
+        background-color: #45a049;
+      }
+
+      #next-button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        display: none;
+      }
+
+      #next-button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="quiz-container">
+      <h1>Harry Potter House Sorting Quiz</h1>
+      <div id="question-container"></div>
+      <div id="options-container"></div>
+      <button onclick="nextQuestion()" id="next-button" style="display: none">
+        Next
+      </button>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          question: "What is your preferred element?",
+          options: ["Fire", "Water", "Earth", "Air"],
+          points: { Gryffindor: 3, Slytherin: 1, Hufflepuff: 2, Ravenclaw: 4 },
+        },
+        {
+          question: "Which animal do you find most fascinating?",
+          options: ["Lion", "Snake", "Badger", "Eagle"],
+          points: { Gryffindor: 3, Slytherin: 4, Hufflepuff: 2, Ravenclaw: 1 },
+        },
+        {
+          question: "What is your favorite color?",
+          options: ["Red", "Green", "Yellow", "Blue"],
+          points: { Gryffindor: 3, Slytherin: 4, Hufflepuff: 2, Ravenclaw: 1 },
+        },
+        {
+          question:
+            "Which of the following colors do you associate with the University of Delaware?",
+          options: ["Blue", "Yellow", "Red", "Green"],
+          points: { Gryffindor: 3, Slytherin: 1, Hufflepuff: 2, Ravenclaw: 4 },
+        },
+        {
+          question:
+            "What is your favorite spot on the University of Delaware campus?",
+          options: [
+            "The Green",
+            "Trabant University Center",
+            "Morris Library",
+            "Bob Carpenter Center",
+          ],
+          points: { Gryffindor: 3, Slytherin: 4, Hufflepuff: 2, Ravenclaw: 1 },
+        },
+        {
+          question:
+            "What major would you choose at the University of Delaware?",
+          options: [
+            "Engineering",
+            "Business",
+            "Education",
+            "Arts and Sciences",
+          ],
+          points: { Gryffindor: 3, Slytherin: 4, Hufflepuff: 2, Ravenclaw: 1 },
+        },
+      ];
+
+      let currentQuestion = 0;
+      const housePoints = {
+        Gryffindor: 0,
+        Slytherin: 0,
+        Hufflepuff: 0,
+        Ravenclaw: 0,
+      };
+
+      function startQuiz() {
+        showQuestion();
+      }
+
+      function showQuestion() {
+        const questionContainer = document.getElementById("question-container");
+        const optionsContainer = document.getElementById("options-container");
+        const nextButton = document.getElementById("next-button");
+
+        questionContainer.innerHTML = questions[currentQuestion].question;
+        optionsContainer.innerHTML = "";
+
+        questions[currentQuestion].options.forEach((option, index) => {
+          const button = document.createElement("button");
+          button.className = "option";
+          button.textContent = option;
+          button.onclick = () => answerSelected(index + 1);
+          optionsContainer.appendChild(button);
+        });
+
+        if (currentQuestion === questions.length - 1) {
+          nextButton.textContent = "Finish";
+        }
+
+        nextButton.style.display = "none";
+      }
+
+      function answerSelected(answer) {
+        const house = Object.keys(questions[currentQuestion].points)[
+          answer - 1
+        ];
+        housePoints[house] += questions[currentQuestion].points[house];
+
+        const nextButton = document.getElementById("next-button");
+        nextButton.style.display = "block";
+
+        if (currentQuestion === questions.length - 1) {
+          nextButton.textContent = "Finish";
+        }
+      }
+
+      function nextQuestion() {
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+          showQuestion();
+        } else {
+          finishQuiz();
+        }
+      }
+
+      function finishQuiz() {
+        const sortedHouses = Object.entries(housePoints).sort(
+          (a, b) => b[1] - a[1]
+        );
+        const winner = sortedHouses[0][0];
+
+        const quizContainer = document.getElementById("quiz-container");
+        quizContainer.innerHTML = `<h1>Congratulations! You belong to ${winner} house!</h1>`;
+      }
+
+      startQuiz();
+    </script>
+  </body>
+</html>
